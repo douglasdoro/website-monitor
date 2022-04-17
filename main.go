@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -55,7 +58,7 @@ func readCommand() int {
 }
 
 func siteMonitoring() {
-	sites := []string{"https://google.com", "https://jseleicao.com.br/", "https://vivo.com.br"}
+	sites := getSites()
 
 	for _, site := range sites {
 		if isSiteUp(site) {
@@ -70,7 +73,7 @@ func isSiteUp(site string) bool {
 	response, err := http.Get(site)
 
 	if err != nil {
-		fmt.Println("An error has ocurred: ", err)
+		displayErr(err)
 	}
 
 	if response.StatusCode == 200 {
@@ -78,4 +81,33 @@ func isSiteUp(site string) bool {
 	}
 
 	return false
+}
+
+func getSites() []string {
+	var sites []string
+
+	file, err := os.Open("sites")
+
+	if err != nil {
+		displayErr(err)
+	}
+
+	reader := bufio.NewReader(file)
+
+	for {
+		line, err := reader.ReadString('\n')
+		line = strings.TrimSpace(line)
+		fmt.Println("Site: ", line)
+		sites = append(sites, line)
+
+		if err == io.EOF {
+			break
+		}
+	}
+
+	return sites
+}
+
+func displayErr(err error) {
+	fmt.Println("An error has ocurred: ", err)
 }
