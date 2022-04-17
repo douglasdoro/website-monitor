@@ -6,7 +6,9 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -63,8 +65,10 @@ func siteMonitoring() {
 	for _, site := range sites {
 		if isSiteUp(site) {
 			fmt.Println("The site ", site, " is up!")
+			registerIntoLogs(site, true)
 		} else {
 			fmt.Sprintln("The site ", site, " is down!")
+			registerIntoLogs(site, false)
 		}
 	}
 }
@@ -97,7 +101,6 @@ func getSites() []string {
 	for {
 		line, err := reader.ReadString('\n')
 		line = strings.TrimSpace(line)
-		fmt.Println("Site: ", line)
 		sites = append(sites, line)
 
 		if err == io.EOF {
@@ -105,7 +108,21 @@ func getSites() []string {
 		}
 	}
 
+	file.Close()
+
 	return sites
+}
+
+func registerIntoLogs(site string, status bool) {
+	file, err := os.OpenFile("logs", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+
+	if err != nil {
+		displayErr(err)
+	}
+
+	logTime := time.Now().Format("02/01/2006 15:04:05")
+	file.WriteString("[time] " + logTime + " [site] " + site + " UP: " + strconv.FormatBool(status) + "\n")
+	file.Close()
 }
 
 func displayErr(err error) {
