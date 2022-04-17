@@ -12,6 +12,9 @@ import (
 	"time"
 )
 
+const monitorDelay = 5 * time.Second
+const monitorQuantity = 2
+
 func main() {
 	displayWelcome()
 
@@ -64,15 +67,20 @@ func readCommand() int {
 func siteMonitoring() {
 	sites := getSites()
 
-	for _, site := range sites {
-		if isSiteUp(site) {
-			fmt.Println("The site ", site, " is up!")
-			registerIntoLogs(site, true)
-		} else {
-			fmt.Sprintln("The site ", site, " is down!")
-			registerIntoLogs(site, false)
+	for i := 0; i < monitorQuantity; i++ {
+		for _, site := range sites {
+			if isSiteUp(site) {
+				fmt.Println("The site ", site, " is up!")
+				registerIntoLogs(site, true)
+			} else {
+				fmt.Sprintln("The site ", site, " is down!")
+				registerIntoLogs(site, false)
+			}
 		}
+
+		time.Sleep(monitorDelay)
 	}
+
 }
 
 func isSiteUp(site string) bool {
