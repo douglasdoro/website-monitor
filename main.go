@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
@@ -24,7 +25,8 @@ func main() {
 			fmt.Println("Started monitoring...")
 			siteMonitoring()
 		case 2:
-			fmt.Println("Option 2")
+			fmt.Println("Diplaying logs")
+			displayLogs()
 		case 0:
 			fmt.Println("Exit program")
 			os.Exit(0)
@@ -123,6 +125,16 @@ func registerIntoLogs(site string, status bool) {
 	logTime := time.Now().Format("02/01/2006 15:04:05")
 	file.WriteString("[time] " + logTime + " [site] " + site + " UP: " + strconv.FormatBool(status) + "\n")
 	file.Close()
+}
+
+func displayLogs() {
+	file, err := ioutil.ReadFile("logs")
+
+	if err != nil {
+		displayErr(err)
+	}
+
+	fmt.Println(string(file))
 }
 
 func displayErr(err error) {
