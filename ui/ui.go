@@ -22,3 +22,7 @@ func LoadOptionsMenu() {
 	fmt.Println("2 - Display logs")
 	fmt.Println("0 - Signout")
 }
+
+func DisplayErr(err error) {
+	fmt.Println("Something is wrong. Please, check the error: ", err)
+}
