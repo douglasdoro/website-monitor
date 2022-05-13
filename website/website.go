@@ -21,13 +21,10 @@ func StartMonitoring() {
 
 	for i := 0; i < monitorQuantity; i++ {
 		for _, site := range sites {
-			if isSiteUp(site) {
-				ui.DisplayMessage("The site " + site + " is up!")
-				registerIntoLogs(site, true)
-			} else {
-				ui.DisplayMessage("The site " + site + " is down!")
-				registerIntoLogs(site, false)
-			}
+			status := isSiteUp(site)
+
+			ui.DisplayMessage("The site " + site + " is up: " + strconv.FormatBool(status))
+			registerIntoLogs(site, status)
 		}
 
 		time.Sleep(monitorDelay)
@@ -48,6 +45,7 @@ func getSitesFromATextFile() []string {
 	var sites []string
 
 	file, err := os.Open("sites")
+	defer file.Close()
 
 	if err != nil {
 		ui.DisplayErr(err)
@@ -70,8 +68,6 @@ func getSitesFromATextFile() []string {
 		}
 	}
 
-	file.Close()
-
 	return sites
 }
 
@@ -91,6 +87,7 @@ func isSiteUp(site string) bool {
 
 func registerIntoLogs(site string, status bool) {
 	file, err := os.OpenFile("logs", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+	defer file.Close()
 
 	if err != nil {
 		ui.DisplayErr(err)
@@ -98,5 +95,4 @@ func registerIntoLogs(site string, status bool) {
 
 	logTime := time.Now().Format("02/01/2006 15:04:05")
 	file.WriteString("[time] " + logTime + " [site] " + site + " UP: " + strconv.FormatBool(status) + "\n")
-	file.Close()
 }
