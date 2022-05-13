@@ -1,6 +1,9 @@
 package ui
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func LoadWelcomeMessage(name string) {
 	var welcomeMessage string = "Hello, admin! "
@@ -23,6 +26,11 @@ func LoadOptionsMenu() {
 	fmt.Println("0 - Signout")
 }
 
+func DisplayMessage(message string) {
+	fmt.Println(message)
+}
+
 func DisplayErr(err error) {
 	fmt.Println("Something is wrong. Please, check the error: ", err)
+	os.Exit(-1)
 }

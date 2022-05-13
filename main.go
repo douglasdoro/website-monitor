@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	ui "github.com/website-monitor/ui"
+	"github.com/website-monitor/ui"
 	"github.com/website-monitor/website"
 )
 
@@ -18,16 +18,16 @@ func main() {
 
 		switch option {
 		case 1:
-			fmt.Println("Starting monitoring. Please wait.")
+			ui.DisplayMessage("Starting monitoring. Please wait.")
 			website.StartMonitoring()
 		case 2:
-			fmt.Println("Loading logs. Please wait.")
+			ui.DisplayMessage("Loading logs. Please wait.")
 			website.DisplayLogs()
 		case 0:
-			fmt.Println("Thank you. Bye!")
+			ui.DisplayMessage("Thank you. Bye!")
 			os.Exit(0)
 		default:
-			fmt.Println("I don't know this option. Please, rerun the program.")
+			ui.DisplayMessage("I don't know this option. Please, rerun the program.")
 			os.Exit(-1)
 		}
 	}

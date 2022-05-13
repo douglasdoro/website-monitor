@@ -2,7 +2,6 @@ package website
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -15,18 +14,18 @@ import (
 )
 
 const monitorDelay = 5 * time.Second
-const monitorQuantity = 2
+const monitorQuantity = 1
 
 func StartMonitoring() {
-	sites := getSites()
+	sites := getSitesFromATextFile()
 
 	for i := 0; i < monitorQuantity; i++ {
 		for _, site := range sites {
 			if isSiteUp(site) {
-				fmt.Println("The site ", site, " is up!")
+				ui.DisplayMessage("The site " + site + " is up!")
 				registerIntoLogs(site, true)
 			} else {
-				fmt.Sprintln("The site ", site, " is down!")
+				ui.DisplayMessage("The site " + site + " is down!")
 				registerIntoLogs(site, false)
 			}
 		}
@@ -35,7 +34,17 @@ func StartMonitoring() {
 	}
 }
 
-func getSites() []string {
+func DisplayLogs() {
+	file, err := ioutil.ReadFile("logs")
+
+	if err != nil {
+		ui.DisplayErr(err)
+	}
+
+	ui.DisplayMessage(string(file))
+}
+
+func getSitesFromATextFile() []string {
 	var sites []string
 
 	file, err := os.Open("sites")
@@ -48,6 +57,11 @@ func getSites() []string {
 
 	for {
 		line, err := reader.ReadString('\n')
+
+		if err != nil && err != io.EOF {
+			ui.DisplayErr(err)
+		}
+
 		line = strings.TrimSpace(line)
 		sites = append(sites, line)
 
@@ -85,14 +99,4 @@ func registerIntoLogs(site string, status bool) {
 	logTime := time.Now().Format("02/01/2006 15:04:05")
 	file.WriteString("[time] " + logTime + " [site] " + site + " UP: " + strconv.FormatBool(status) + "\n")
 	file.Close()
-}
-
-func DisplayLogs() {
-	file, err := ioutil.ReadFile("logs")
-
-	if err != nil {
-		ui.DisplayErr(err)
-	}
-
-	fmt.Println(string(file))
 }
