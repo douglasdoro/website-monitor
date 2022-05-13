@@ -27,16 +27,16 @@ func main() {
 
 		switch option {
 		case 1:
-			fmt.Println("Started monitoring...")
+			fmt.Println("Starting monitoring. Please wait.")
 			siteMonitoring()
 		case 2:
-			fmt.Println("Diplaying logs")
+			fmt.Println("Loading logs. Please wait.")
 			displayLogs()
 		case 0:
-			fmt.Println("Exit program")
+			fmt.Println("Thank you. Bye!")
 			os.Exit(0)
 		default:
-			fmt.Println("Invalid option!")
+			fmt.Println("I don't know this option. Please, rerun the program.")
 			os.Exit(-1)
 		}
 	}
