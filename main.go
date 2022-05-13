@@ -16,10 +16,10 @@ const monitorDelay = 5 * time.Second
 const monitorQuantity = 2
 
 func main() {
-	displayWelcome()
+	loadWelcomeMessage("")
 
 	for {
-		displayMenu()
+		loadOptionsMenu()
 
 		option := readCommand()
 
@@ -40,15 +40,20 @@ func main() {
 	}
 }
 
-func displayWelcome() {
-	name := "Fulano"
+func loadWelcomeMessage(name string) {
+	var welcomeMessage string = "Hello, admin! "
+
+	if name != "" {
+		welcomeMessage = "Hello, " + name + "!"
+	}
+
 	version := 1.0
 
-	fmt.Println("Hello, " + name + "!")
+	fmt.Println(welcomeMessage)
 	fmt.Println("Program version: ", version)
 }
 
-func displayMenu() {
+func loadOptionsMenu() {
 	fmt.Println("")
 	fmt.Println("Choose an option:")
 	fmt.Println("1 - Start monitoring")
