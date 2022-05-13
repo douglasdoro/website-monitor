@@ -10,16 +10,18 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	ui "github.com/website-monitor/ui"
 )
 
 const monitorDelay = 5 * time.Second
 const monitorQuantity = 2
 
 func main() {
-	loadWelcomeMessage("")
+	ui.LoadWelcomeMessage("")
 
 	for {
-		loadOptionsMenu()
+		ui.LoadOptionsMenu()
 
 		option := readCommand()
 
@@ -38,27 +40,6 @@ func main() {
 			os.Exit(-1)
 		}
 	}
-}
-
-func loadWelcomeMessage(name string) {
-	var welcomeMessage string = "Hello, admin! "
-
-	if name != "" {
-		welcomeMessage = "Hello, " + name + "!"
-	}
-
-	version := 1.0
-
-	fmt.Println(welcomeMessage)
-	fmt.Println("Program version: ", version)
-}
-
-func loadOptionsMenu() {
-	fmt.Println("")
-	fmt.Println("Choose an option:")
-	fmt.Println("1 - Start monitoring")
-	fmt.Println("2 - Display logs")
-	fmt.Println("0 - Signout")
 }
 
 func readCommand() int {
